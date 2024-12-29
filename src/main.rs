@@ -1,8 +1,10 @@
 mod image_generator;
 mod vector;
+mod point;
 
 use image_generator::ImageGenerator;
 use vector::Vector;
+use point::Point;
 
 fn task1() {
     let width = 800;
@@ -24,4 +26,10 @@ fn main() {
     let v2 = Vector::new(4.0, 5.0, 6.0);
     let result = v1 + v2;
     println!("{:?}", result); // Output: Vector { x: 5.0, y: 7.0, z: 9.0 }
+
+    let p1 = Point::new(0.0, 0.0, 0.0);
+    let p2 = Point::new(1.0, 1.0, 1.0);
+    let result2 = p1 + v1;
+    println!("{:?}", result2);
+
 }
