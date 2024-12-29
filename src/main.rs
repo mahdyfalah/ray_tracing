@@ -8,6 +8,7 @@ mod material;
 use image_generator::ImageGenerator;
 use vector::Vector;
 use point::Point;
+use rfd::FileDialog;
 
 fn task1() {
     let width = 800;
@@ -35,4 +36,13 @@ fn main() {
     let result2 = p1 + v1;
     println!("{:?}", result2);
 
+
+    let file = FileDialog::new()
+        .add_filter("XML files", &["xml"])
+        .pick_file();
+
+    match file {
+        Some(path) => println!("Selected file: {:?}", path),
+        None => println!("No file selected"),
+    }
 }
