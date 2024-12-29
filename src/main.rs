@@ -2,6 +2,8 @@ mod image_generator;
 mod vector;
 mod point;
 mod ray;
+mod object;
+mod material;
 
 use image_generator::ImageGenerator;
 use vector::Vector;
