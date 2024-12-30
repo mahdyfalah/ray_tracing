@@ -4,6 +4,8 @@ mod point;
 mod ray;
 mod object;
 mod material;
+mod scene;
+mod camera;
 
 use image_generator::ImageGenerator;
 use vector::Vector;
