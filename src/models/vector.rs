@@ -1,24 +1,25 @@
+use serde::Deserialize;
 use std::ops::{Add, Sub, Neg, Mul, Div};
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
 pub struct Vector {
+    #[serde(rename = "@x")]
     pub x: f64,
+    #[serde(rename = "@y")]
     pub y: f64,
+    #[serde(rename = "@z")]
     pub z: f64,
 }
 
 impl Vector {
-    /// Creates a new Vector
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Self { x, y, z }
     }
 
-    /// Computes the dot product of two vectors
     pub fn dot(self, other: Vector) -> f64 {
         self.x * other.x + self.y * other.y + self.z * other.z
     }
 
-    /// Computes the cross product of two vectors
     pub fn cross(self, other: Vector) -> Vector {
         Vector {
             x: self.y * other.z - self.z * other.y,
@@ -27,13 +28,10 @@ impl Vector {
         }
     }
 
-    /// Computes the length of the vector
     pub fn length(self) -> f64 {
         (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
     }
 
-
-    /// Returns a normalized version of the vector
     pub fn normalize(self) -> Vector {
         let length = self.length();
         if length == 0.0 {
@@ -44,10 +42,9 @@ impl Vector {
     }
 }
 
-// Operators: Add, Sub, Neg, Mul
+// Operator implementations remain the same
 impl Add for Vector {
     type Output = Vector;
-
     fn add(self, other: Vector) -> Vector {
         Vector {
             x: self.x + other.x,
@@ -59,7 +56,6 @@ impl Add for Vector {
 
 impl Sub for Vector {
     type Output = Vector;
-
     fn sub(self, other: Vector) -> Vector {
         Vector {
             x: self.x - other.x,
@@ -71,7 +67,6 @@ impl Sub for Vector {
 
 impl Neg for Vector {
     type Output = Vector;
-
     fn neg(self) -> Vector {
         Vector {
             x: -self.x,
@@ -83,7 +78,6 @@ impl Neg for Vector {
 
 impl Mul<f64> for Vector {
     type Output = Vector;
-
     fn mul(self, scalar: f64) -> Vector {
         Vector {
             x: self.x * scalar,
@@ -95,7 +89,6 @@ impl Mul<f64> for Vector {
 
 impl Div<f64> for Vector {
     type Output = Vector;
-
     fn div(self, scalar: f64) -> Self::Output {
         Vector {
             x: self.x / scalar,
@@ -104,4 +97,3 @@ impl Div<f64> for Vector {
         }
     }
 }
-

@@ -1,10 +1,14 @@
+use serde::Deserialize;
 use std::ops::{Add, Sub};
-use crate::vector::Vector;
+use crate::models::vector::Vector;
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
 pub struct Point {
+    #[serde(rename = "@x")]
     pub x: f64,
+    #[serde(rename = "@y")]
     pub y: f64,
+    #[serde(rename = "@z")]
     pub z: f64,
 }
 
@@ -31,8 +35,6 @@ impl Point {
 
 impl Add<Vector> for Point {
     type Output = Point;
-
-    /// Adds a Vector to a Point, resulting in a new Point
     fn add(self, vector: Vector) -> Self::Output {
         Point {
             x: self.x + vector.x,
@@ -44,8 +46,6 @@ impl Add<Vector> for Point {
 
 impl Sub<Point> for Point {
     type Output = Vector;
-
-    /// Subtracts one Point from another, resulting in a Vector
     fn sub(self, other: Point) -> Self::Output {
         Vector {
             x: self.x - other.x,
@@ -57,8 +57,6 @@ impl Sub<Point> for Point {
 
 impl Sub<Vector> for Point {
     type Output = Point;
-
-    /// Subtracts a Vector from a Point, resulting in a new Point
     fn sub(self, vector: Vector) -> Self::Output {
         Point {
             x: self.x - vector.x,
