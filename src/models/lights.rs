@@ -12,27 +12,23 @@ pub struct Lights {
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
-#[serde(rename = "ambient_light")]
 pub struct AmbientLight {
     pub color: Color,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
-#[serde(rename = "point_light")]
 pub struct PointLight {
     pub color: Color,
     pub position: Point,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
-#[serde(rename = "parallel_light")]
 pub struct ParallelLight {
     pub color: Color,
     pub direction: Vector,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
-#[serde(rename = "spot_light")]
 pub struct SpotLight {
     pub color: Color,
     pub position: Point,
