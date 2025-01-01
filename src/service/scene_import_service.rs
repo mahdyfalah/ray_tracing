@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use rfd::FileDialog;
 use std::fs::File;
 use std::io::Read;
