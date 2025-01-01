@@ -40,7 +40,6 @@ impl Vector {
     }
 }
 
-// Operator implementations remain the same
 impl Add for Vector {
     type Output = Vector;
     fn add(self, other: Vector) -> Vector {

@@ -11,17 +11,14 @@ pub struct Point {
 }
 
 impl Point {
-    /// Creates a new Point
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Point { x, y, z }
     }
 
-    /// Computes the dot product of two points (treated as vectors from origin)
     pub fn dot(self, other: Point) -> f64 {
         self.x * other.x + self.y * other.y + self.z * other.z
     }
 
-    /// Computes the cross product of two points (treated as vectors from origin)
     pub fn cross(self, other: Point) -> Vector {
         Vector {
             x: self.y * other.z - self.z * other.y,
