@@ -7,9 +7,7 @@ fn test_deserialize_vector() {
         <direction x="1.0" y="2.0" z="3.0" />
     "#;
 
-    // Deserialize from XML into our Vector type
     let dir: Vector = from_str(xml_data).expect("Failed to parse Vector from XML");
 
-    // Check that we got the right values
     assert_eq!(dir, Vector { x: 1.0, y: 2.0, z: 3.0 });
 }
