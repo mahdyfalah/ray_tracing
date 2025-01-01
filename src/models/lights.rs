@@ -5,10 +5,10 @@ use crate::models::vector::Vector;
 
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct Lights {
-    pub ambient_light: AmbientLight,
-    pub point_light: PointLight,
-    pub parallel_light: ParallelLight,
-    pub spot_light: SpotLight,
+    pub ambient_light: Option<AmbientLight>,
+    pub point_light: Option<PointLight>,
+    pub parallel_light: Option<ParallelLight>,
+    pub spot_light: Option<SpotLight>,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]

@@ -1,8 +1,8 @@
+use ray_tracing::models::scene::*;
 use ray_tracing::models::color::Color;
 use ray_tracing::models::point::Point;
 use ray_tracing::models::vector::Vector;
 use serde_xml_rs::from_str;
-use ray_tracing::models::scene::Scene;
 
 #[test]
 fn test_parse_scene() {
@@ -70,4 +70,3 @@ fn test_parse_scene() {
         Color { r: 0.25, g: 0.18, b: 0.50 }
     );
 }
-

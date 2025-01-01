@@ -6,3 +6,4 @@ pub mod camera;
 pub mod lights;
 pub mod material;
 pub mod sphere;
+pub mod scene;
