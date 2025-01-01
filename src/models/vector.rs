@@ -2,12 +2,10 @@ use serde::Deserialize;
 use std::ops::{Add, Sub, Neg, Mul, Div};
 
 #[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
+#[serde(rename = "direction")]
 pub struct Vector {
-    #[serde(rename = "@x")]
     pub x: f64,
-    #[serde(rename = "@y")]
     pub y: f64,
-    #[serde(rename = "@z")]
     pub z: f64,
 }
 

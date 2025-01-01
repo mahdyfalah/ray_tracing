@@ -3,12 +3,10 @@ use std::ops::{Add, Sub};
 use crate::models::vector::Vector;
 
 #[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
+#[serde(rename = "position")]
 pub struct Point {
-    #[serde(rename = "@x")]
     pub x: f64,
-    #[serde(rename = "@y")]
     pub y: f64,
-    #[serde(rename = "@z")]
     pub z: f64,
 }
 
