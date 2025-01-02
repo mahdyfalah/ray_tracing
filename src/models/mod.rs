@@ -8,3 +8,4 @@ pub mod material;
 pub mod sphere;
 pub mod scene;
 pub mod ray;
+pub mod intersection;
