@@ -1,2 +1,2 @@
-pub mod service;
+pub mod services;
 pub mod models;

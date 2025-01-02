@@ -1,8 +1,13 @@
-use ray_tracing::service::scene_import_service::SceneImportService;
+use ray_tracing::services::image_generate_service::ImageGenerateService;
+use ray_tracing::services::scene_import_service::SceneImportService;
 
 fn main() {
     match SceneImportService::import_scene() {
-        Ok(scene) => println!("Scene imported successfully: {:?}", scene),
-        Err(err) => eprintln!("Error: {}", err),
+        Ok(scene) => {
+            ImageGenerateService::generate_image(&scene);
+        }
+        Err(err) => {
+            eprintln!("Failed to load scene: {}", err);
+        }
     }
 }
