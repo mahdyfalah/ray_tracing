@@ -27,3 +27,74 @@ fn test_parse_camera() {
     assert_eq!(camera.resolution, Resolution { horizontal: 1920, vertical: 1080 });
     assert_eq!(camera.max_bounces, MaxBounces { n: 100 });
 }
+
+// use ray_tracing::models::ray::Ray;
+//
+// #[test]
+// fn test_generate_ray_center_pixel() {
+//     let camera = Camera {
+//         position: Point::new(0.0, 0.0, 0.0),
+//         look_at: Vector::new(0.0, 0.0, -1.0),
+//         up: Vector::new(0.0, 1.0, 0.0),
+//         horizontal_fov: Fov { angle: 45.0 },
+//         resolution: Resolution { horizontal: 512, vertical: 512 },
+//         max_bounces: MaxBounces { n: 8 },
+//     };
+//
+//     // Generate ray for center pixel (256, 256)
+//     let ray: Ray = camera.generate_ray(256, 256);
+//
+//     // Check origin
+//     assert_eq!(ray.origin, Point::new(0.0, 0.0, 0.0));
+//
+//     // Check direction approximately (should point straight forward)
+//     let expected_dir = Vector::new(0.0, 0.0, -1.0).normalize();
+//     let diff = ray.direction - expected_dir;
+//     assert!(diff.length() < 1e-6, "Direction not normalized properly!");
+// }
+//
+// #[test]
+// fn test_generate_ray_top_left_pixel() {
+//     let camera = Camera {
+//         position: Point::new(0.0, 0.0, 0.0),
+//         look_at: Vector::new(0.0, 0.0, -1.0),
+//         up: Vector::new(0.0, 1.0, 0.0),
+//         horizontal_fov: Fov { angle: 45.0 },
+//         resolution: Resolution { horizontal: 512, vertical: 512 },
+//         max_bounces: MaxBounces { n: 8 },
+//     };
+//
+//     // Generate ray for top-left pixel (0, 0)
+//     let ray: Ray = camera.generate_ray(0, 0);
+//
+//     // Check origin
+//     assert_eq!(ray.origin, Point::new(0.0, 0.0, 0.0));
+//
+//     // Check direction approximately
+//     let expected_dir = Vector::new(-0.4142, 0.4142, -1.0).normalize(); // Based on FOV calculations
+//     let diff = ray.direction - expected_dir;
+//     assert!(diff.length() < 1e-6, "Direction for top-left pixel is incorrect!");
+// }
+//
+// #[test]
+// fn test_generate_ray_bottom_right_pixel() {
+//     let camera = Camera {
+//         position: Point::new(0.0, 0.0, 0.0),
+//         look_at: Vector::new(0.0, 0.0, -1.0),
+//         up: Vector::new(0.0, 1.0, 0.0),
+//         horizontal_fov: Fov { angle: 45.0 },
+//         resolution: Resolution { horizontal: 512, vertical: 512 },
+//         max_bounces: MaxBounces { n: 8 },
+//     };
+//
+//     // Generate ray for bottom-right pixel (511, 511)
+//     let ray: Ray = camera.generate_ray(511, 511);
+//
+//     // Check origin
+//     assert_eq!(ray.origin, Point::new(0.0, 0.0, 0.0));
+//
+//     // Check direction approximately
+//     let expected_dir = Vector::new(0.4142, -0.4142, -1.0).normalize(); // Based on FOV calculations
+//     let diff = ray.direction - expected_dir;
+//     assert!(diff.length() < 1e-6, "Direction for bottom-right pixel is incorrect!");
+// }
