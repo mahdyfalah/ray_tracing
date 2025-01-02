@@ -38,7 +38,7 @@ impl Camera {
         let y_n = (v as f64 + 0.5) / self.resolution.vertical as f64;
 
         // 2. FOV calculations (corrected scaling for fov_y)
-        let fov_x = self.horizontal_fov.angle.to_radians() / 2.0; // Horizontal FOV
+        let fov_x = self.horizontal_fov.angle.to_radians(); // Horizontal FOV
         let fov_y = fov_x * (self.resolution.vertical as f64 / self.resolution.horizontal as f64); // Aspect ratio scaling
 
         // 3. Map to image plane range [-1, 1]
