@@ -115,17 +115,7 @@ impl RenderService {
                 }
             }
 
-            // -------------------------
-            // Recursive Reflection
-            // -------------------------
-            // let reflectance = material.reflectance.r;
-            // if reflectance > 0.0 {
-            //     let reflected_ray = ray.reflect(intersection.point, intersection.normal);
-            //     let reflected_color = Self::trace_ray(&reflected_ray, scene, depth - 1);
-            //     final_color = final_color * (1.0 - reflectance) + reflected_color * reflectance;
-            // }
-
-            return final_color; // Return computed color
+            return final_color;
         }
 
         scene.background_color // No intersection

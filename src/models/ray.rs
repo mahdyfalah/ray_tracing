@@ -31,9 +31,9 @@ impl Ray {
         let reflected_direction = self.direction - normal * 2.0 * self.direction.dot(normal);
 
         Ray::new(
-            intersection_point + normal,
+            intersection_point + normal * 1e-6,
             reflected_direction.normalize(),
-            0.0,
+            1e-6,
             f64::INFINITY,
         )
     }
