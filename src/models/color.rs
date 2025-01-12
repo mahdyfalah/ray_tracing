@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use std::ops::{Add, AddAssign, Mul, MulAssign}; // Import necessary traits
+use std::ops::{Add, AddAssign, Mul, MulAssign};
 
 #[derive(Debug, Clone, Copy, PartialEq, Deserialize)]
 pub struct Color {
@@ -14,7 +14,6 @@ impl Color {
     }
 }
 
-// Add Colors
 impl Add for Color {
     type Output = Self;
 
@@ -27,7 +26,6 @@ impl Add for Color {
     }
 }
 
-// AddAssign for in-place addition
 impl AddAssign for Color {
     fn add_assign(&mut self, other: Self) {
         self.r += other.r;
@@ -36,7 +34,6 @@ impl AddAssign for Color {
     }
 }
 
-// Multiply Colors component-wise
 impl Mul for Color {
     type Output = Self;
 
@@ -49,7 +46,6 @@ impl Mul for Color {
     }
 }
 
-// Multiply by scalar (f64)
 impl Mul<f64> for Color {
     type Output = Self;
 
@@ -62,7 +58,6 @@ impl Mul<f64> for Color {
     }
 }
 
-// MultiplyAssign by scalar (f64)
 impl MulAssign<f64> for Color {
     fn mul_assign(&mut self, scalar: f64) {
         self.r *= scalar;

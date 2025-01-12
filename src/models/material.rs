@@ -30,5 +30,5 @@ pub struct Transmittance {
 
 #[derive(Debug, Deserialize, PartialEq, Clone)]
 pub struct Refraction {
-    pub iof: f64, // Index of refraction
+    pub iof: f64,
 }

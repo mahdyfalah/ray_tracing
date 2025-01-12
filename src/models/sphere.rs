@@ -13,6 +13,10 @@ pub struct Sphere {
 }
 
 impl Surface for Sphere {
+    /// Computes if there is intersection between sphere and ray
+    /// if so an Intersection object containing the intersection
+    /// data is returned
+    /// source tutorial page 16, 17
     fn intersect(&self, ray: &Ray) -> Option<Intersection> {
         let oc = ray.origin - self.position;
         let a = ray.direction.dot(ray.direction);
