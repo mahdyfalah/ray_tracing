@@ -23,7 +23,7 @@ impl RenderService {
         for y in 0..height {
             for x in 0..width {
                 let ray = camera.generate_ray(x, y);
-                let color = Self::trace_ray(&ray, &scene, max_bounces); // Pass max_bounces
+                let color = Self::trace_ray(&ray, &scene, max_bounces);
                 let pixel = Rgb([
                     (color.r * 255.0) as u8,
                     (color.g * 255.0) as u8,
@@ -39,6 +39,7 @@ impl RenderService {
         println!("Image saved to: output/{}", scene.output_file);
     }
 
+    /// source: https://raytracing.github.io/books/RayTracingInOneWeekend.html#diffusematerials/truelambertianreflection
     fn trace_ray(ray: &Ray, scene: &Scene, depth: u32) -> Color {
         if depth == 0 {
             return scene.background_color;
@@ -66,19 +67,15 @@ impl RenderService {
             let normal = intersection.normal;
             let view_dir = -ray.direction.normalize(); // View direction
 
-            // -------------------------
-            // Ambient Light Contribution
-            // -------------------------
+            // Ambient Light
             if let Some(ambient) = &scene.lights.ambient_light {
                 let ambient_color = material.color * ambient.color;
                 final_color += ambient_color * material.phong.ka;
             }
 
-            // -------------------------
-            // Parallel Light Contribution
-            // -------------------------
+            // Parallel Light
             if let Some(parallel) = &scene.lights.parallel_light {
-                let light_dir = -parallel.direction.normalize(); // Light direction
+                let light_dir = -parallel.direction.normalize();
 
                 // Cast a shadow ray
                 let shadow_ray = Ray::new(
@@ -113,7 +110,6 @@ impl RenderService {
                         .powf(material.phong.exponent);
                     let specular_color = parallel.color * specular_intensity * material.phong.ks;
 
-                    // Add both diffuse and specular to final color
                     final_color += diffuse_color * material.phong.kd;
                     final_color += specular_color;
                 }
@@ -122,12 +118,12 @@ impl RenderService {
             // -------------------------
             // Recursive Reflection
             // -------------------------
-            let reflectance = material.reflectance.r;
-            if reflectance > 0.0 {
-                let reflected_ray = ray.reflect(intersection.point, intersection.normal);
-                let reflected_color = Self::trace_ray(&reflected_ray, scene, depth - 1);
-                final_color = final_color * (1.0 - reflectance) + reflected_color * reflectance;
-            }
+            // let reflectance = material.reflectance.r;
+            // if reflectance > 0.0 {
+            //     let reflected_ray = ray.reflect(intersection.point, intersection.normal);
+            //     let reflected_color = Self::trace_ray(&reflected_ray, scene, depth - 1);
+            //     final_color = final_color * (1.0 - reflectance) + reflected_color * reflectance;
+            // }
 
             return final_color; // Return computed color
         }
