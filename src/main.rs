@@ -12,6 +12,6 @@ fn main() {
         }
     }
 
-    // let model = read_obj_file("example-input/open_room.obj").unwrap();
+    // let model = read_obj_file("assets/open_room.obj").unwrap();
     // println!("{:#?}", model);
 }
