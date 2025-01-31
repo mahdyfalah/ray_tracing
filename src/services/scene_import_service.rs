@@ -37,6 +37,8 @@ impl SceneImportService {
 
         let scene: Scene = from_str(&content)?;
 
+        println!("Selected scene: {:?}", scene);
+
         Ok(scene)
     }
 }
