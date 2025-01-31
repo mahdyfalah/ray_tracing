@@ -9,3 +9,6 @@ pub mod sphere;
 pub mod scene;
 pub mod ray;
 pub mod intersection;
+
+pub type Vertex = point::Point;
+pub type Normal = vector::Vector;
