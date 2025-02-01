@@ -66,7 +66,7 @@ impl Triangle {
 
         // Compute intersection point and normal
         let point = ray.at(t);
-        let normal = e1.cross(e2).normalize();  // Correct normal
+        let normal = self.normal;
 
         Some(Intersection {
             t,
