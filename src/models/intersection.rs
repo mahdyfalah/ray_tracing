@@ -10,3 +10,21 @@ pub struct Intersection {
     pub normal: Vector,           // Surface normal at intersection
     pub material: MaterialSolid,  // Material at the point
 }
+
+
+impl Intersection {
+    /// Creates a new intersection
+    pub fn new(
+        t: f64,
+        point: Point,
+        normal: Vector,
+        material: MaterialSolid,
+    ) -> Self {
+        Self {
+            t,
+            point,
+            normal,
+            material,
+        }
+    }
+}

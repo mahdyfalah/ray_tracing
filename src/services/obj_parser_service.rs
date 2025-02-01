@@ -2,12 +2,13 @@ use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
 use crate::models::{Vertex, Normal};
+use crate::models::triangle::Triangle;
 
 #[derive(Debug)]
 pub struct Face {
-    vertex_indices: Vec<usize>,
-    texture_indices: Vec<usize>,
-    normal_indices: Vec<usize>,
+    pub vertex_indices: [usize; 3],  // Indices for 3 vertices
+    pub texture_indices: [usize; 3], // Indices for 3 texture coordinates
+    pub normal_indices: [usize; 3],  // Indices for 3 normals
 }
 
 #[derive(Debug)]
@@ -70,20 +71,30 @@ impl ObjModel {
     }
 
     fn parse_face(&mut self, parts: &[&str]) {
-        let mut vertex_indices = Vec::new();
-        let mut texture_indices = Vec::new();
-        let mut normal_indices = Vec::new();
+        // Ensure the face has exactly 3 vertices (a triangle)
+        if parts.len() != 4 {
+            eprintln!("Only triangular faces are supported. Skipping face: {:?}", parts);
+            return;
+        }
 
-        for part in parts.iter().skip(1) {
+        let mut vertex_indices = [0; 3];
+        let mut texture_indices = [0; 3];
+        let mut normal_indices = [0; 3];
+
+        for (i, part) in parts.iter().skip(1).enumerate() {
             let indices: Vec<&str> = part.split('/').collect();
-            if !indices.is_empty() {
-                vertex_indices.push(indices[0].parse::<usize>().unwrap() - 1); // Convert to 0-based index
-            }
+
+            // Parse vertex index (required)
+            vertex_indices[i] = indices[0].parse::<usize>().unwrap() - 1; // Convert to 0-based index
+
+            // Parse texture index (optional)
             if indices.len() > 1 && !indices[1].is_empty() {
-                texture_indices.push(indices[1].parse::<usize>().unwrap() - 1);
+                texture_indices[i] = indices[1].parse::<usize>().unwrap() - 1;
             }
+
+            // Parse normal index (optional)
             if indices.len() > 2 && !indices[2].is_empty() {
-                normal_indices.push(indices[2].parse::<usize>().unwrap() - 1);
+                normal_indices[i] = indices[2].parse::<usize>().unwrap() - 1;
             }
         }
 
@@ -92,6 +103,37 @@ impl ObjModel {
             texture_indices,
             normal_indices,
         });
+    }
+
+    /// Converts the OBJ model into a list of triangles
+    pub fn to_triangles(&self) -> Vec<Triangle> {
+        let mut triangles = Vec::new();
+
+        for face in &self.faces {
+            // Get vertices
+            let v0 = self.vertices[face.vertex_indices[0]];
+            let v1 = self.vertices[face.vertex_indices[1]];
+            let v2 = self.vertices[face.vertex_indices[2]];
+
+            // Get normals (if available)
+            let normal = if !self.normals.is_empty() {
+                // Use the first vertex normal for the entire face (simplification)
+                self.normals[face.normal_indices[0]]
+            } else {
+                // Compute face normal if no normals are provided
+                (v1 - v0).cross(v2 - v0).normalize()
+            };
+
+            // Create triangle
+            triangles.push(Triangle {
+                v0,
+                v1,
+                v2,
+                normal,
+            });
+        }
+
+        triangles
     }
 }
 

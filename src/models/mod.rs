@@ -10,6 +10,7 @@ pub mod scene;
 pub mod ray;
 pub mod intersection;
 pub mod mesh;
+pub mod triangle;
 
 pub type Vertex = point::Point;
 pub type Normal = vector::Vector;

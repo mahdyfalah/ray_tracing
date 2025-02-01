@@ -35,7 +35,8 @@ impl SceneImportService {
         let mut content = String::new();
         file.read_to_string(&mut content)?;
 
-        let scene: Scene = from_str(&content)?;
+        let mut scene: Scene = from_str(&content)?;
+        scene.load_meshes()?;
 
         println!("Selected scene: {:?}", scene);
 
