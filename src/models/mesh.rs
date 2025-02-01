@@ -2,7 +2,7 @@ use std::io;
 use std::path::Path;
 use serde::Deserialize;
 use crate::models::intersection::Intersection;
-use crate::models::material_solid::MaterialSolid;
+use crate::models::material::MaterialSolid;
 use crate::models::ray::Ray;
 use crate::models::surface::Surface;
 use crate::models::triangle::Triangle;

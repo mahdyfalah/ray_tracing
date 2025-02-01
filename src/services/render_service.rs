@@ -5,7 +5,7 @@ use crate::models::surface::{Surface, SurfaceType};
 use crate::models::color::Color;
 use image::{RgbImage, Rgb};
 use std::path::Path;
-use crate::models::material_solid::MaterialSolid;
+use crate::models::material::MaterialSolid;
 use crate::models::point::Point;
 use crate::models::vector::Vector;
 

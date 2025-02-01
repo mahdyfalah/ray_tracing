@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use crate::models::intersection::Intersection;
 use crate::models::point::Point;
-use crate::models::material_solid::MaterialSolid;
+use crate::models::material::MaterialSolid;
 use crate::models::ray::Ray;
 use crate::models::surface::Surface;
 

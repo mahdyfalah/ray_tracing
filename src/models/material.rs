@@ -11,6 +11,15 @@ pub struct MaterialSolid {
 }
 
 #[derive(Debug, Deserialize, PartialEq, Clone)]
+pub struct MaterialTextured {
+    pub name: String,
+    pub phong: Phong,
+    pub reflectance: Reflectance,
+    pub transmittance: Transmittance,
+    pub refraction: Refraction,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Clone)]
 pub struct Phong {
     pub ka: f64,         // Ambient coefficient
     pub kd: f64,         // Diffuse coefficient

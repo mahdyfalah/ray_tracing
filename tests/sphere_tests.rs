@@ -1,6 +1,6 @@
 use ray_tracing::models::sphere::*;
 use ray_tracing::models::point::Point;
-use ray_tracing::models::material_solid::*;
+use ray_tracing::models::material::*;
 use ray_tracing::models::color::Color;
 use serde_xml_rs::from_str;
 
