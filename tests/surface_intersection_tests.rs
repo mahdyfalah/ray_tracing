@@ -1,5 +1,5 @@
 use ray_tracing::models::sphere::Sphere;
-use ray_tracing::models::material::{MaterialSolid, Phong, Reflectance, Transmittance, Refraction};
+use ray_tracing::models::material_solid::{MaterialSolid, Phong, Reflectance, Transmittance, Refraction};
 use ray_tracing::models::ray::Ray;
 use ray_tracing::models::point::Point;
 use ray_tracing::models::vector::Vector;

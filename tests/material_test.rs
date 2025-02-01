@@ -1,4 +1,4 @@
-use ray_tracing::models::material::*;
+use ray_tracing::models::material_solid::*;
 use ray_tracing::models::color::Color;
 use serde_xml_rs::from_str;
 
