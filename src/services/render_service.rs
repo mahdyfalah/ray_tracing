@@ -33,15 +33,51 @@ impl RenderService {
         Self::save_image(img, scene);
     }
 
-    /// Casts a ray into the scene and returns the color from the closest intersection,
-    /// or the background color if there is none.
+    /// Casts a ray into the scene and returns the resulting color.
+    /// This function is recursive and will combine local illumination,
+    /// reflection, and refraction.
     fn trace_ray(ray: &Ray, scene: &Scene, depth: u32) -> Color {
         if depth == 0 {
             return scene.background_color;
         }
 
         if let Some(intersection) = Self::find_closest_intersection(ray, scene) {
-            Self::calculate_lighting(&intersection, ray, scene, depth)
+            // Compute the local illumination
+            let local = Self::calculate_lighting(&intersection, ray, scene, depth);
+
+            // Retrieve the material coefficients
+            let reflect = intersection.material.reflectance.r;
+            let trans = intersection.material.transmittance.t;
+            let local_weight = (1.0 - reflect - trans).max(0.0);
+
+            // Compute reflection contribution
+            let reflection_color = if reflect > 0.0 {
+                let reflect_dir = Self::reflect(ray.direction, intersection.normal);
+                // Offset the origin slightly along the normal to avoid self-intersection.
+                let reflect_origin = intersection.point + intersection.normal * 1e-4;
+                let reflect_ray = Ray::new(reflect_origin, reflect_dir, 1e-4, f64::INFINITY);
+                Self::trace_ray(&reflect_ray, scene, depth - 1)
+            } else {
+                Color::new(0.0, 0.0, 0.0)
+            };
+
+            // Compute refraction contribution
+            let refraction_color = if trans > 0.0 {
+                if let Some(refract_dir) = Self::refract(ray.direction, intersection.normal, 1.0, intersection.material.refraction.iof) {
+                    // Offset in the opposite direction of the normal for the transmitted ray.
+                    let refract_origin = intersection.point - intersection.normal * 1e-4;
+                    let refract_ray = Ray::new(refract_origin, refract_dir, 1e-4, f64::INFINITY);
+                    Self::trace_ray(&refract_ray, scene, depth - 1)
+                } else {
+                    // Total internal reflection: treat as pure reflection.
+                    Color::new(0.0, 0.0, 0.0)
+                }
+            } else {
+                Color::new(0.0, 0.0, 0.0)
+            };
+
+            // Combine the contributions.
+            local * local_weight + reflection_color * reflect + refraction_color * trans
         } else {
             scene.background_color
         }
@@ -71,8 +107,7 @@ impl RenderService {
         closest
     }
 
-    /// Calculates lighting at an intersection. (Note that reflection/refraction
-    /// can be added later by making this function recursive.)
+    /// Calculates local illumination (ambient, diffuse, and specular) at an intersection.
     fn calculate_lighting(intersection: &Intersection, ray: &Ray, scene: &Scene, _depth: u32) -> Color {
         let material = &intersection.material;
         let normal = intersection.normal;
@@ -81,12 +116,12 @@ impl RenderService {
 
         let mut color = Color::new(0.0, 0.0, 0.0);
 
-        // Ambient lighting (same for all surfaces)
+        // Ambient lighting
         for ambient in &scene.lights.ambient_light {
             color += material.color * ambient.color * material.phong.ka;
         }
 
-        // Parallel (directional) lights: no distance attenuation (max_distance = INFINITY)
+        // Parallel (directional) lights: no distance attenuation
         for parallel in &scene.lights.parallel_light {
             let light_dir = -parallel.direction.normalize();
             if !Self::is_in_shadow(&point, normal, light_dir, f64::INFINITY, scene) {
@@ -103,10 +138,8 @@ impl RenderService {
             let light_dir = to_light.normalize();
 
             if !Self::is_in_shadow(&point, normal, light_dir, distance, scene) {
-                // Soft attenuation: adjust the constants to tune falloff behavior
                 let attenuation = 1.0 / (1.0 + 0.1 * distance + 0.01 * distance * distance);
                 let factor = attenuation * light_intensity;
-
                 color += Self::calc_diffuse(material, point_light.color, light_dir, normal, factor);
                 color += Self::calc_specular(material, point_light.color, light_dir, normal, view_dir, factor);
             }
@@ -116,13 +149,13 @@ impl RenderService {
     }
 
     /// Returns true if an object is between the point and the light.
-    /// For parallel lights, use max_distance = f64::INFINITY.
+    /// For directional lights, pass max_distance = f64::INFINITY.
     fn is_in_shadow(point: &Point, normal: Vector, light_dir: Vector, max_distance: f64, scene: &Scene) -> bool {
         let shadow_ray = Ray::new(
-            *point + normal * 1e-4, // Offset to avoid self-intersection
+            *point + normal * 1e-4,
             light_dir.normalize(),
             1e-4,
-            max_distance - 1e-4,    // Stop just before the light (if finite)
+            max_distance - 1e-4,
         );
 
         scene.surfaces.surfaces.iter().any(|surface| match surface {
@@ -150,6 +183,37 @@ impl RenderService {
         let reflection_dir = (normal * (2.0 * normal.dot(light_dir)) - light_dir).normalize();
         let specular_intensity = view_dir.dot(reflection_dir).max(0.0).powf(material.phong.exponent);
         light_color * specular_intensity * material.phong.ks * factor
+    }
+
+    /// Computes the reflection direction given an incident direction and a normal.
+    fn reflect(incident: Vector, normal: Vector) -> Vector {
+        // Reflect incident around the normal: r = i - 2*(i dot n)*n
+        incident - normal * (2.0 * incident.dot(normal))
+    }
+
+    /// Computes the refracted direction using Snell's Law.
+    ///
+    /// * `incident` is assumed to be normalized.
+    /// * `normal` is the surface normal at the point of incidence (pointing outwards).
+    /// * `eta_incident` is the refractive index of the medium the ray is coming from.
+    /// * `eta_transmitted` is the refractive index of the material.
+    ///
+    /// Returns Some(refracted_direction) if refraction occurs, or None if total internal reflection.
+    fn refract(incident: Vector, normal: Vector, eta_incident: f64, eta_transmitted: f64) -> Option<Vector> {
+        let cosi = (-incident).dot(normal).max(-1.0).min(1.0);
+        let (n, eta) = if cosi < 0.0 {
+            // The ray is inside the object. Invert the normal and swap indices.
+            ( -normal, eta_transmitted / eta_incident )
+        } else {
+            ( normal, eta_incident / eta_transmitted )
+        };
+        let cosi = (-incident).dot(n);
+        let k = 1.0 - eta * eta * (1.0 - cosi * cosi);
+        if k < 0.0 {
+            None // Total internal reflection
+        } else {
+            Some(incident * eta + n * (eta * cosi - k.sqrt()))
+        }
     }
 
     /// Keeps the closest intersection (the one with the smallest t value).
