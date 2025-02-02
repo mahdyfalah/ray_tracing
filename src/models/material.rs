@@ -59,13 +59,13 @@ impl Material {
 
         match self {
             Material::Solid(s) => s.color,
-            Material::Textured(t) => black,
+            Material::Textured(_) => black,
         }
     }
 
     pub fn texture(&self) -> &str {
         match self {
-            Material::Solid(s) => "No Texture!",
+            Material::Solid(_) => "No Texture!",
             Material::Textured(t) => &t.texture.name
         }
     }

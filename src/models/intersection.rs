@@ -1,6 +1,6 @@
 use crate::models::point::Point;
 use crate::models::vector::Vector;
-use crate::models::material::{Material, MaterialSolid};
+use crate::models::material::Material;
 
 /// Stores the result of a ray-surface intersection
 #[derive(Debug, PartialEq)]

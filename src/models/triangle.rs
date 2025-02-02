@@ -2,7 +2,7 @@ use crate::models::intersection::Intersection;
 use crate::models::ray::Ray;
 use crate::models::vector::Vector;
 use crate::models::point::Point;
-use crate::models::material::{Material, MaterialSolid};
+use crate::models::material::Material;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Triangle {
