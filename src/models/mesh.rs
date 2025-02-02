@@ -1,5 +1,6 @@
 use std::io;
 use std::path::Path;
+use image::ImageError;
 use serde::Deserialize;
 use crate::models::intersection::Intersection;
 use crate::models::material::{Material, MaterialSolid, MaterialTextured};
@@ -34,6 +35,15 @@ impl Mesh {
     pub fn load_obj<P: AsRef<Path>>(&mut self, path: P) -> io::Result<()> {
         let obj_model = read_obj_file(path)?;
         self.triangles = obj_model.to_triangles();
+        Ok(())
+    }
+
+    /// Loads the texture for this mesh if it has a textured material.
+    pub fn load_texture(&mut self, base_path: &Path) -> Result<(), ImageError> {
+        if let Some(ref mut textured) = self.material_textured {
+            // Load the texture image.
+            textured.texture.load(base_path)?;
+        }
         Ok(())
     }
 

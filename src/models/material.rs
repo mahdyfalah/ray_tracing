@@ -1,3 +1,4 @@
+use image::RgbImage;
 use serde::Deserialize;
 use crate::models::color::Color;
 
@@ -51,6 +52,8 @@ pub struct Refraction {
 #[derive(Debug, Deserialize, PartialEq, Clone)]
 pub struct Texture {
     pub name: String,
+    #[serde(skip)]
+    pub data: Option<RgbImage>,
 }
 
 impl Material {
@@ -96,5 +99,19 @@ impl Material {
             Material::Solid(s) => &s.refraction,
             Material::Textured(t) => &t.refraction,
         }
+    }
+}
+
+use std::path::{Path, PathBuf};
+use image::ImageError;
+
+impl Texture {
+    /// Loads the texture from the assets/textures directory as an RgbImage.
+    pub fn load(&mut self, base_path: &Path) -> Result<(), ImageError> {
+        let texture_path: PathBuf = base_path.join("assets/textures").join(&self.name);
+        // Open the image file
+        let img = image::open(&texture_path)?.to_rgb8();
+        self.data = Some(img);
+        Ok(())
     }
 }
