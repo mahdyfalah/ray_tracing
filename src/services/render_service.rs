@@ -70,10 +70,10 @@ impl RenderService {
                     Self::trace_ray(&refract_ray, scene, depth - 1)
                 } else {
                     // Total internal reflection: treat as pure reflection.
-                    Color::new(0.0, 0.0, 0.0)
+                    Color::BLACK
                 }
             } else {
-                Color::new(0.0, 0.0, 0.0)
+                Color::BLACK
             };
 
             // Combine the contributions.
