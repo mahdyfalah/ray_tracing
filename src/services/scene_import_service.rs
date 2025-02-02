@@ -38,6 +38,8 @@ impl SceneImportService {
         let mut scene: Scene = from_str(&content)?;
         scene.load_meshes()?;
 
+        println!("scene loaded {:?}", scene);
+
         Ok(scene)
     }
 }

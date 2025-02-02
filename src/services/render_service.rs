@@ -5,7 +5,7 @@ use crate::models::surface::{Surface, SurfaceType};
 use crate::models::color::Color;
 use image::{RgbImage, Rgb};
 use std::path::Path;
-use crate::models::material::MaterialSolid;
+use crate::models::material::{Material, MaterialSolid};
 use crate::models::point::Point;
 use crate::models::vector::Vector;
 
@@ -46,8 +46,8 @@ impl RenderService {
             let local = Self::calculate_lighting(&intersection, ray, scene, depth);
 
             // Retrieve the material coefficients
-            let reflect = intersection.material.reflectance.r;
-            let trans = intersection.material.transmittance.t;
+            let reflect = intersection.material.reflectance().r;
+            let trans = intersection.material.transmittance().t;
             let local_weight = (1.0 - reflect - trans).max(0.0);
 
             // Compute reflection contribution
@@ -63,7 +63,7 @@ impl RenderService {
 
             // Compute refraction contribution
             let refraction_color = if trans > 0.0 {
-                if let Some(refract_dir) = Self::refract(ray.direction, intersection.normal, 1.0, intersection.material.refraction.iof) {
+                if let Some(refract_dir) = Self::refract(ray.direction, intersection.normal, 1.0, intersection.material.refraction().iof) {
                     // Offset in the opposite direction of the normal for the transmitted ray.
                     let refract_origin = intersection.point - intersection.normal * 1e-4;
                     let refract_ray = Ray::new(refract_origin, refract_dir, 1e-4, f64::INFINITY);
@@ -96,7 +96,7 @@ impl RenderService {
                 }
                 SurfaceType::Mesh(mesh) => {
                     for triangle in &mesh.triangles {
-                        if let Some(intersection) = triangle.intersect(ray, &mesh.material_solid) {
+                        if let Some(intersection) = triangle.intersect(ray, &mesh.material()) {
                             closest = Self::keep_closest(closest, intersection);
                         }
                     }
@@ -118,7 +118,7 @@ impl RenderService {
 
         // Ambient lighting
         for ambient in &scene.lights.ambient_light {
-            color += material.color * ambient.color * material.phong.ka;
+            color += material.color() * ambient.color * material.phong().ka;
         }
 
         // Parallel (directional) lights: no distance attenuation
@@ -161,19 +161,19 @@ impl RenderService {
         scene.surfaces.surfaces.iter().any(|surface| match surface {
             SurfaceType::Sphere(sphere) => sphere.intersect(&shadow_ray).is_some(),
             SurfaceType::Mesh(mesh) => mesh.triangles.iter()
-                .any(|triangle| triangle.intersect(&shadow_ray, &mesh.material_solid).is_some()),
+                .any(|triangle| triangle.intersect(&shadow_ray, &mesh.material()).is_some()),
         })
     }
 
     /// Calculates the diffuse contribution from a light.
-    fn calc_diffuse(material: &MaterialSolid, light_color: Color, light_dir: Vector, normal: Vector, factor: f64) -> Color {
+    fn calc_diffuse(material: &Material, light_color: Color, light_dir: Vector, normal: Vector, factor: f64) -> Color {
         let diffuse_intensity = normal.dot(light_dir).max(0.0);
-        material.color * light_color * diffuse_intensity * material.phong.kd * factor
+        material.color() * light_color * diffuse_intensity * material.phong().kd * factor
     }
 
     /// Calculates the specular contribution from a light.
     fn calc_specular(
-        material: &MaterialSolid,
+        material: &Material,
         light_color: Color,
         light_dir: Vector,
         normal: Vector,
@@ -181,8 +181,8 @@ impl RenderService {
         factor: f64,
     ) -> Color {
         let reflection_dir = (normal * (2.0 * normal.dot(light_dir)) - light_dir).normalize();
-        let specular_intensity = view_dir.dot(reflection_dir).max(0.0).powf(material.phong.exponent);
-        light_color * specular_intensity * material.phong.ks * factor
+        let specular_intensity = view_dir.dot(reflection_dir).max(0.0).powf(material.phong().exponent);
+        light_color * specular_intensity * material.phong().ks * factor
     }
 
     /// Computes the reflection direction given an incident direction and a normal.

@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use crate::models::intersection::Intersection;
 use crate::models::point::Point;
-use crate::models::material::MaterialSolid;
+use crate::models::material::{Material, MaterialSolid};
 use crate::models::ray::Ray;
 use crate::models::surface::Surface;
 
@@ -48,7 +48,7 @@ impl Surface for Sphere {
             t,
             point,
             normal,
-            material: self.material_solid.clone(),
+            material: Material::Solid(self.material_solid.clone()),
         })
     }
 }

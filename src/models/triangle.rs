@@ -2,7 +2,7 @@ use crate::models::intersection::Intersection;
 use crate::models::ray::Ray;
 use crate::models::vector::Vector;
 use crate::models::point::Point;
-use crate::models::material::MaterialSolid;
+use crate::models::material::{Material, MaterialSolid};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Triangle {
@@ -28,7 +28,7 @@ impl Triangle {
     }
 
     /// Möller–Trumbore intersection algorithm implementation
-    pub fn intersect(&self, ray: &Ray, material: &MaterialSolid) -> Option<Intersection> {
+    pub fn intersect(&self, ray: &Ray, material: &Material) -> Option<Intersection> {
         let e1 = self.v1 - self.v0;
         let e2 = self.v2 - self.v0;
         let h = ray.direction.cross(e2);  // Intermediate vector
