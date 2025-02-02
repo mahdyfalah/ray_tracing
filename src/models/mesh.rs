@@ -37,6 +37,7 @@ impl Mesh {
         Ok(())
     }
 
+    //noinspection ALL
     pub fn material(&self) -> Material {
         if let Some(m) = &self.material_solid {
             Material::Solid(m.clone())
@@ -46,7 +47,6 @@ impl Mesh {
             unreachable!("There must always be either a solid or textured material.");
         }
     }
-
 }
 
 impl Surface for Mesh {

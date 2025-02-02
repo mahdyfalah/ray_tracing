@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use crate::models::intersection::Intersection;
 use crate::models::point::Point;
-use crate::models::material::{Material, MaterialSolid};
+use crate::models::material::{Material, MaterialSolid, MaterialTextured};
 use crate::models::ray::Ray;
 use crate::models::surface::Surface;
 
@@ -9,7 +9,23 @@ use crate::models::surface::Surface;
 pub struct Sphere {
     pub radius: f64,
     pub position: Point,
-    pub material_solid: MaterialSolid,
+    #[serde(default)]
+    pub material_solid: Option<MaterialSolid>,
+    #[serde(default)]
+    pub material_textured: Option<MaterialTextured>,
+}
+
+impl Sphere {
+    //noinspection ALL
+    pub fn material(&self) -> Material {
+        if let Some(m) = &self.material_solid {
+            Material::Solid(m.clone())
+        } else if let Some(m) = &self.material_textured {
+            Material::Textured(m.clone())
+        } else {
+            unreachable!("There must always be either a solid or textured material.");
+        }
+    }
 }
 
 impl Surface for Sphere {
@@ -48,7 +64,7 @@ impl Surface for Sphere {
             t,
             point,
             normal,
-            material: Material::Solid(self.material_solid.clone()),
+            material: self.material(),
         })
     }
 }
