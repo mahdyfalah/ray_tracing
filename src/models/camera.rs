@@ -46,6 +46,7 @@ impl Camera {
         let y_i = (1.0 - 2.0 * y_n) * fov_y.tan();
 
         // Compute camera basis vectors (coordinate system)
+        // source: tutorial 2 - page 25
         let z = (self.position - self.look_at).normalize();
         let x = self.up.cross(z).normalize();
         let y = z.cross(x).normalize();

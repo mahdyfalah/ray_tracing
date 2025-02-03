@@ -84,15 +84,12 @@ impl ObjModel {
         for (i, part) in parts.iter().skip(1).enumerate() {
             let indices: Vec<&str> = part.split('/').collect();
 
-            // Parse vertex index (required)
             vertex_indices[i] = indices[0].parse::<usize>().unwrap() - 1; // Convert to 0-based index
 
-            // Parse texture index (optional)
             if indices.len() > 1 && !indices[1].is_empty() {
                 texture_indices[i] = indices[1].parse::<usize>().unwrap() - 1;
             }
 
-            // Parse normal index (optional)
             if indices.len() > 2 && !indices[2].is_empty() {
                 normal_indices[i] = indices[2].parse::<usize>().unwrap() - 1;
             }

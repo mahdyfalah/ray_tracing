@@ -188,33 +188,26 @@ impl RenderService {
     /// Computes the reflection direction given an incident direction and a normal.
     fn reflect(incident: Vector, normal: Vector) -> Vector {
         // Reflect incident around the normal: r = i - 2*(i dot n)*n
+        // https://raytracing.github.io/books/RayTracingInOneWeekend.html
         incident - normal * (2.0 * incident.dot(normal))
     }
 
-    /// Computes the refracted direction using Snell's Law.
-    ///
-    /// * `incident` is assumed to be normalized.
-    /// * `normal` is the surface normal at the point of incidence (pointing outwards).
-    /// * `eta_incident` is the refractive index of the medium the ray is coming from.
-    /// * `eta_transmitted` is the refractive index of the material.
-    ///
+    /// Computes the refracted direction
     /// Returns Some(refracted_direction) if refraction occurs, or None if total internal reflection.
+    // tutorial 2 page 14,15,16
     fn refract(incident: Vector, normal: Vector, eta_incident: f64, eta_transmitted: f64) -> Option<Vector> {
+        let eta = eta_incident / eta_transmitted;
         let cosi = (-incident).dot(normal).max(-1.0).min(1.0);
-        let (n, eta) = if cosi < 0.0 {
-            // The ray is inside the object. Invert the normal and swap indices.
-            ( -normal, eta_transmitted / eta_incident )
+        let sin2_t = eta * eta * (1.0 - cosi * cosi);
+
+        if sin2_t > 1.0 {
+            None // Total internal reflection occurs
         } else {
-            ( normal, eta_incident / eta_transmitted )
-        };
-        let cosi = (-incident).dot(n);
-        let k = 1.0 - eta * eta * (1.0 - cosi * cosi);
-        if k < 0.0 {
-            None // Total internal reflection
-        } else {
-            Some(incident * eta + n * (eta * cosi - k.sqrt()))
+            let cost = (1.0 - sin2_t).sqrt();
+            Some((incident + normal * cosi) * eta - normal * cost)
         }
     }
+
 
     /// Keeps the closest intersection (the one with the smallest t value).
     fn keep_closest(current: Option<Intersection>, new: Intersection) -> Option<Intersection> {
